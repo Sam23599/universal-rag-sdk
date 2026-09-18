@@ -136,7 +136,7 @@ class HtmlParser:
 
 
 class PdfParser:
-    """Optional pypdf parser with an injectable OCR fallback per page."""
+    """PDF parser with an injectable OCR fallback per page."""
 
     def __init__(self, ocr: Callable[[bytes, int], str] | None = None, *, minimum_page_characters: int = 40) -> None:
         self.ocr = ocr
@@ -146,7 +146,7 @@ class PdfParser:
         try:
             from pypdf import PdfReader
         except ImportError as exc:
-            raise RuntimeError("PDF parsing requires: pip install universal-rag-sdk[pdf]") from exc
+            raise RuntimeError("PDF parsing requires pypdf. Reinstall with: pip install universal-rag-sdk") from exc
 
         def extract() -> list[str]:
             from io import BytesIO

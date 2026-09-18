@@ -1,0 +1,3 @@
+# Runtime dependencies for users installing from a cloned GitHub repository.
+# Keep this synchronized with [project].dependencies in pyproject.toml.
+pypdf>=5.0,<7.0

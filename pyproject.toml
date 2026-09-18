@@ -10,7 +10,9 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Proprietary" }
 authors = [{ name = "Satyam Singh Virat" }]
-dependencies = []
+dependencies = [
+    "pypdf>=5.0,<7.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/Sam23599/universal-rag-sdk"
@@ -18,7 +20,6 @@ Repository = "https://github.com/Sam23599/universal-rag-sdk"
 Issues = "https://github.com/Sam23599/universal-rag-sdk/issues"
 
 [project.optional-dependencies]
-pdf = ["pypdf"]
 dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.9"]
 
 [tool.setuptools]

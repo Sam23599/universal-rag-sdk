@@ -5,7 +5,7 @@ A modular, provider-neutral Python library for complete retrieval-augmented gene
 `sources -> parse/OCR -> clean/deduplicate -> chunk -> enrich -> embed/index -> preprocess query -> retrieve -> filter/rerank -> build context -> generate -> validate/cite -> evaluate`
 
 The package is application-independent. FastAPI, MongoDB, Redis, Celery, FAISS, and any specific LLM vendor are not
-required.
+required. Its components can be used together as a complete pipeline or imported individually.
 
 ## What is included
 
@@ -32,16 +32,75 @@ required.
 Every component is public and can be used independently. `IngestionPipeline`, `RAGPipeline`, and `RAG` are optional
 orchestrators.
 
-## Install
+## Requirements
+
+- Python 3.11 or newer
+- `pip`
+- Git, when installing directly from GitHub
+
+The SDK currently has one runtime dependency: `pypdf`, used by the built-in PDF parser. It is declared in both
+`pyproject.toml` and `requirements.txt`, so a normal package installation includes it automatically. Provider adapters
+you add for an LLM, embedding model, vector database, OCR engine, or observability service may require their own client
+libraries.
+
+## Install from GitHub
+
+### Option 1: install directly into another project
+
+Activate that project's virtual environment and run:
 
 ```bash
-pip install -e ./rag_sdk
+python -m pip install "universal-rag-sdk @ git+https://github.com/Sam23599/universal-rag-sdk.git"
 ```
 
-Core functionality has no runtime dependencies and supports Python 3.11+. PDF parsing is optional:
+For reproducible deployments, pin a release tag or commit instead of tracking the latest `main` branch:
 
 ```bash
-pip install -e './rag_sdk[pdf]'
+python -m pip install "universal-rag-sdk @ git+https://github.com/Sam23599/universal-rag-sdk.git@v0.1.0"
+```
+
+The tag-based command will work after that release tag exists.
+
+### Option 2: clone it for local development
+
+```bash
+git clone https://github.com/Sam23599/universal-rag-sdk.git
+cd universal-rag-sdk
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python -m pip install -e .
+```
+
+On Windows PowerShell, activate the environment with `.venv\\Scripts\\Activate.ps1`.
+
+To work on the SDK itself, install the development tools and run its checks:
+
+```bash
+python -m pip install -e ".[dev]"
+python -m pytest -q
+ruff check src tests
+```
+
+## Verify the installation
+
+```bash
+python -c "import universal_rag; print('universal_rag is ready')"
+```
+
+Then import it from any Python project:
+
+```python
+from universal_rag import RAG, IngestionPipeline, RAGPipeline
+```
+
+## Install from PyPI
+
+Once the package is published to PyPI, installation will be:
+
+```bash
+python -m pip install universal-rag-sdk
 ```
 
 ## Complete pipeline
@@ -106,6 +165,22 @@ parsed = await ParserRegistry.with_defaults().parse(
     RawDocument(id="rates", content=html_bytes, mime_type="text/html")
 )
 ```
+
+PDF parsing uses the same registry and preserves page numbers:
+
+```python
+from pathlib import Path
+
+pdf = RawDocument(
+    id="handbook",
+    content=Path("employee-handbook.pdf").read_bytes(),
+    mime_type="application/pdf",
+    source_uri="employee-handbook.pdf",
+)
+parsed_pdf = await ParserRegistry.with_defaults().parse(pdf)
+```
+
+Scanned PDFs need an OCR callable supplied to `PdfParser`; the SDK does not force a particular OCR vendor.
 
 ### Chunk only
 
