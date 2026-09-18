@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "universal-rag-sdk"
+version = "0.1.0"
+description = "A modular, provider-neutral RAG SDK covering ingestion, indexing, retrieval, generation, and evaluation"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Proprietary" }
+authors = [{ name = "Satyam Singh Virat" }]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Sam23599/universal-rag-sdk"
+Repository = "https://github.com/Sam23599/universal-rag-sdk"
+Issues = "https://github.com/Sam23599/universal-rag-sdk/issues"
+
+[project.optional-dependencies]
+pdf = ["pypdf"]
+dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.9"]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+universal_rag = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
